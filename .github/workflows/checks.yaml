@@ -1,0 +1,38 @@
+name: Check Pull Request
+
+on:
+  push:
+    branches: [main]
+
+  pull_request:
+    branches: [main]
+
+jobs:
+  run_checks:
+    name: Build, check formatting, check linting
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node 🛎️
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: Use corepack
+        run: corepack enable
+
+      - name: Install dependencies ⬇️
+        run: yarn --immutable
+
+      - name: Build 📦
+        run: yarn build
+
+      - name: Check formatting 🎨
+        run: yarn format:check
