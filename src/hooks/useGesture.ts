@@ -1,18 +1,20 @@
-import { useContext, useEffect, useState } from "react";
-import { HandLandmarkContext } from "../contexts/HandLandmarkContext";
+import { useEffect, useState } from "react";
 import { GestureDetector, HandGesture } from "../utils/GestureDetector";
+import { useHandLandmarker } from "./useHandLandmarker";
 
 export const useGesture = (video: HTMLVideoElement | null) => {
-  const landmarker = useContext(HandLandmarkContext);
-  const [detection, setDetection] = useState<HandGesture>("NONE");
+  const landmarker = useHandLandmarker(video);
+  const [gesture, setGesture] = useState<HandGesture>("NONE");
 
   useEffect(() => {
-    console.log("useEffect!");
     if (!video || !landmarker) return;
-    const detector = new GestureDetector(landmarker, video, setDetection);
-    console.log("set detector!");
-    video.addEventListener("loadeddata", detector.detect);
+    const detector = new GestureDetector(landmarker, video, setGesture);
+
+    return () => {
+      detector.close();
+      setGesture("NONE");
+    };
   }, [landmarker, video]);
 
-  return detection;
+  return gesture;
 };

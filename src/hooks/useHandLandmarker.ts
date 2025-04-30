@@ -1,8 +1,7 @@
-import { FC, PropsWithChildren, useEffect, useState } from "react";
-import { HandLandmarkContext } from "../contexts/HandLandmarkContext";
 import { FilesetResolver, HandLandmarker } from "@mediapipe/tasks-vision";
+import { useEffect, useState } from "react";
 
-export const HandLandmarkProvider: FC<PropsWithChildren> = ({ children }) => {
+export const useHandLandmarker = (video: HTMLVideoElement | null) => {
   const [landmarker, setLandmarker] = useState<HandLandmarker | null>(null);
 
   useEffect(() => {
@@ -25,12 +24,9 @@ export const HandLandmarkProvider: FC<PropsWithChildren> = ({ children }) => {
     return () => {
       cancel = true;
       promise.then((landmarker) => landmarker.close());
+      setLandmarker(null);
     };
-  }, []);
+  }, [video]);
 
-  return (
-    <HandLandmarkContext.Provider value={landmarker}>
-      {children}
-    </HandLandmarkContext.Provider>
-  );
+  return landmarker;
 };

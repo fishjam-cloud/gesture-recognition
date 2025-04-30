@@ -32,8 +32,7 @@ class Vector {
     const sum = vectors.reduce(
       (acc, vec) => new Vector(acc.x + vec.x, acc.y + vec.y, false),
     );
-    sum.x /= vectors.length;
-    sum.y /= vectors.length;
+    sum.normalize();
     return sum;
   }
 
@@ -113,8 +112,9 @@ const isTimeoutPose = (hands: NormalizedLandmark[][]): boolean => {
 export class GestureDetector {
   landmarker: HandLandmarker;
   video: HTMLVideoElement;
-  prevTime: number;
   detectionCallback: GestureCallback;
+  prevTime: number = 0;
+  closing: boolean = false;
 
   constructor(
     landmarker: HandLandmarker,
@@ -123,15 +123,13 @@ export class GestureDetector {
   ) {
     this.landmarker = landmarker;
     this.video = video;
-    this.prevTime = -1;
     this.detectionCallback = detectionCallback;
+    this.video.requestVideoFrameCallback(() => this.detect());
   }
 
   detect() {
-    if (!this.video || !this.video.videoWidth || !this.video.videoHeight) {
-      requestAnimationFrame(() => this.detect());
-      return;
-    }
+    if (this.closing) return;
+
     const currentTime = this.video.currentTime;
     if (this.prevTime !== currentTime) {
       this.prevTime = currentTime;
@@ -139,9 +137,13 @@ export class GestureDetector {
         this.video,
         currentTime * 1000,
       );
-      const gesture = findGesture(detections.landmarks);
-      if (gesture) this.detectionCallback(gesture);
+      this.detectionCallback(findGesture(detections.landmarks));
     }
-    requestAnimationFrame(() => this.detect());
+
+    this.video.requestVideoFrameCallback(() => this.detect());
+  }
+
+  close() {
+    this.closing = true;
   }
 }
