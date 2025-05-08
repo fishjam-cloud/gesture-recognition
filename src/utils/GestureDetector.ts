@@ -1,4 +1,8 @@
-import { HandLandmarker, NormalizedLandmark } from "@mediapipe/tasks-vision";
+import {
+  FilesetResolver,
+  HandLandmarker,
+  NormalizedLandmark,
+} from "@mediapipe/tasks-vision";
 
 export type HandGesture = "NONE" | "TIMEOUT";
 
@@ -110,28 +114,42 @@ const isTimeoutPose = (hands: NormalizedLandmark[][]): boolean => {
 };
 
 export class GestureDetector {
-  landmarker: HandLandmarker;
+  landmarker?: HandLandmarker;
   video: HTMLVideoElement;
   detectionCallback: GestureCallback;
   prevTime: number = 0;
   closing: boolean = false;
+  playPromise: Promise<void>;
 
-  constructor(
-    landmarker: HandLandmarker,
-    video: HTMLVideoElement,
-    detectionCallback: GestureCallback,
-  ) {
-    this.landmarker = landmarker;
-    this.video = video;
+  constructor(stream: MediaStream, detectionCallback: GestureCallback) {
     this.detectionCallback = detectionCallback;
+
+    this.setupLandmarker();
+
+    this.video = document.createElement("video");
+    this.video.muted = true;
+    this.video.srcObject = stream;
+    this.playPromise = this.video.play().catch(() => {});
     this.video.requestVideoFrameCallback(() => this.detect());
+  }
+
+  async setupLandmarker() {
+    const vision = await FilesetResolver.forVisionTasks(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm",
+    );
+    const landmarker = await HandLandmarker.createFromOptions(vision, {
+      baseOptions: { modelAssetPath: "hand_landmark.task" },
+      runningMode: "VIDEO",
+      numHands: 2,
+    });
+    this.landmarker = landmarker;
   }
 
   detect() {
     if (this.closing) return;
 
     const currentTime = this.video.currentTime;
-    if (this.prevTime !== currentTime) {
+    if (this.landmarker && this.prevTime < currentTime) {
       this.prevTime = currentTime;
       const detections = this.landmarker.detectForVideo(
         this.video,
@@ -145,5 +163,7 @@ export class GestureDetector {
 
   close() {
     this.closing = true;
+    this.playPromise.finally(() => this.video.remove());
+    this.landmarker?.close();
   }
 }

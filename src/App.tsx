@@ -1,6 +1,6 @@
 import "./App.css";
 import { useCamera } from "@fishjam-cloud/react-client";
-import { AnimatedVideoPlayer } from "./components/AnimatedVideoPlayer";
+import { PeerTile } from "./components/PeerTile";
 
 function App() {
   const { toggleCamera, cameraStream } = useCamera();
@@ -8,7 +8,7 @@ function App() {
   return (
     <>
       <button onClick={toggleCamera}>Toggle camera</button>
-      {cameraStream && <AnimatedVideoPlayer stream={cameraStream} />}
+      {cameraStream && <PeerTile stream={cameraStream} />}
     </>
   );
 }
