@@ -20,6 +20,13 @@ export default defineConfig({
           ),
           dest: "assets",
         },
+        {
+          src: path.join(
+            path.dirname(require.resolve("@mediapipe/tasks-vision")),
+            "wasm",
+          ),
+          dest: "assets",
+        },
       ],
     }),
   ],

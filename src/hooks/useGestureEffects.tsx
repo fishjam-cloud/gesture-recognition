@@ -13,7 +13,6 @@ const getNewId = (() => {
 
 export const useGestureEffects = ({ stream }: GestureEffects) => {
   const smelter = useSmelter();
-  const streamRef = useRef<MediaStream | null>(null);
   const [outputStream, setOutputStream] = useState<MediaStream | null>(null);
   const inputIdRef = useRef<string>("");
   const { width, height } = useMemo(() => {
@@ -25,17 +24,16 @@ export const useGestureEffects = ({ stream }: GestureEffects) => {
   }, [stream]);
 
   useEffect(() => {
-    if (!smelter || !stream || stream === streamRef.current) return;
+    if (!smelter || !stream) return;
     if (inputIdRef.current) smelter.unregisterInput(inputIdRef.current);
 
     const id = getNewId();
-    streamRef.current = stream;
     inputIdRef.current = id;
 
     (async () => {
       await smelter.registerInput(id, {
         type: "stream",
-        stream,
+        stream: stream.clone(),
       });
     })();
   }, [stream, smelter]);

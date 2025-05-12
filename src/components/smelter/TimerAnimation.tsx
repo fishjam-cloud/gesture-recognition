@@ -1,5 +1,5 @@
 import { Image, Rescaler, View } from "@swmansion/smelter";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export type TimerAnimationProps = {
   duration: number;
@@ -7,27 +7,25 @@ export type TimerAnimationProps = {
   height: number;
 };
 
-
 export default function TimerAnimation({
   duration,
   width,
   height,
 }: TimerAnimationProps) {
   const [done, setDone] = useState(false);
-  const bottom = done ? 30 : height;
-  const right = done ? 0 : width;
+  const right = done ? -width : width;
+  const rotation = done ? -1440 : 0;
+
+  const sz = useMemo(() => Math.min(width, height), [width, height]);
 
   useEffect(() => {
-    setTimeout(() => setDone(true), 100)
+    setTimeout(() => setDone(true), 100);
   }, []);
 
   return (
-    <View
-      style={{ width, height: height / 3, bottom, left: 0 }}
-      transition={{ durationMs: 0.5 * duration, easingFunction: "bounce" }}
-    >
+    <View style={{ width, height, top: 0, left: 0 }}>
       <Rescaler
-        style={{ bottom: 0, right, width: width / 3, height: height / 3 }}
+        style={{ bottom: 0, right, width: sz, height: sz, rotation }}
         transition={{ durationMs: duration }}
       >
         <Image imageId="timer" />
