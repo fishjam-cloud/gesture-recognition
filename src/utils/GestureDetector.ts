@@ -1,169 +1,59 @@
-import {
-  FilesetResolver,
-  HandLandmarker,
-  NormalizedLandmark,
-} from "@mediapipe/tasks-vision";
-
-export type HandGesture = "NONE" | "TIMEOUT";
-
-export type GestureCallback = (gesture: HandGesture) => void;
-
-class Vector {
-  x: number;
-  y: number;
-
-  constructor(x: number, y: number, normalize: boolean = true) {
-    this.x = x;
-    this.y = y;
-    if (normalize) this.normalize();
-  }
-
-  normalize() {
-    const denom = Math.hypot(this.x, this.y);
-    this.x /= denom;
-    this.y /= denom;
-  }
-
-  static deviation(k: Vector, l: Vector) {
-    return Math.abs(k.x * l.y - k.y * l.x);
-  }
-
-  static through(p: NormalizedLandmark, q: NormalizedLandmark) {
-    return new Vector(p.y - q.y, q.x - p.x);
-  }
-
-  static average(vectors: Vector[]) {
-    const sum = vectors.reduce(
-      (acc, vec) => new Vector(acc.x + vec.x, acc.y + vec.y, false),
-    );
-    sum.normalize();
-    return sum;
-  }
-
-  static meanDeviation(center: Vector, vectors: Vector[]) {
-    return (
-      vectors
-        .map((vec) => Vector.deviation(center, vec))
-        .reduce((acc, det) => acc + det, 0) / vectors.length
-    );
-  }
-}
-
-const INDEX_FINGER = [5, 6, 7, 8];
-const MIDDLE_FINGER = [9, 10, 11, 12];
-const RING_FINGER = [13, 14, 15, 16];
-const PINKY = [17, 18, 19, 20];
-
-const MIDDLE_FINGER_TIP = 12;
-const MIDDLE_FINGER_BASE = 9;
-const MIDDLE_FINGER_JOINT = 10;
-
-const JOINT_DEVIATION = 0.4;
-const FINGER_DEVIATION = 0.1;
-const HAND_DEVIATION = 0.75;
-const HAND_DISTANCE = 2;
-
-const FINGERS = [INDEX_FINGER, MIDDLE_FINGER, RING_FINGER, PINKY];
-
-const findGesture = (hands: NormalizedLandmark[][]): HandGesture => {
-  if (isTimeoutPose(hands)) return "TIMEOUT";
-
-  return "NONE";
-};
-
-const fingerDirection = (landmarks: NormalizedLandmark[]) => {
-  const directions: Vector[] = [];
-  for (let idx = 1; idx < landmarks.length; ++idx) {
-    directions.push(Vector.through(landmarks[idx], landmarks[idx - 1]));
-  }
-  for (let idx = 1; idx < directions.length; ++idx) {
-    const deviation = Vector.deviation(directions[idx], directions[idx - 1]);
-    if (deviation > JOINT_DEVIATION) return null;
-  }
-  return Vector.average(directions);
-};
-
-const handDirection = (landmarks: NormalizedLandmark[]) => {
-  const fingers = FINGERS.map((finger) => finger.map((idx) => landmarks[idx]));
-  const fingerDirections = fingers.map(fingerDirection);
-  if (!fingerDirections.every((line) => line !== null)) return null;
-
-  const avg = Vector.average(fingerDirections);
-  if (Vector.meanDeviation(avg, fingerDirections) > FINGER_DEVIATION)
-    return null;
-  return avg;
-};
-
-const distance = (lhs: NormalizedLandmark, rhs: NormalizedLandmark) =>
-  Math.hypot(lhs.x - rhs.x, lhs.y - rhs.y);
-
-const fingerInPalm = (lhs: NormalizedLandmark[], rhs: NormalizedLandmark[]) =>
-  distance(lhs[MIDDLE_FINGER_TIP], rhs[MIDDLE_FINGER_BASE]) <
-  distance(rhs[MIDDLE_FINGER_BASE], rhs[MIDDLE_FINGER_JOINT]) * HAND_DISTANCE;
-
-const isTimeoutPose = (hands: NormalizedLandmark[][]): boolean => {
-  if (hands.length !== 2) return false;
-  const [d1, d2] = hands.map(handDirection);
-  if (d1 === null || d2 === null) return false;
-  const deviation = Vector.deviation(d1, d2);
-  if (deviation < HAND_DEVIATION) return false;
-
-  const [h1, h2] = hands;
-  const ret = fingerInPalm(h1, h2) || fingerInPalm(h2, h1);
-  return ret;
-};
+import { findGesture, GestureCallback } from "./Gesture";
+import workerUrl from "../assets/MediaPipeWorker.js?worker&url";
 
 export class GestureDetector {
-  landmarker?: HandLandmarker;
-  video: HTMLVideoElement;
-  detectionCallback: GestureCallback;
-  prevTime: number = 0;
-  closing: boolean = false;
-  playPromise: Promise<void>;
+  private video: HTMLVideoElement;
+  private canvas: OffscreenCanvas;
+  private canvasCtx: OffscreenCanvasRenderingContext2D;
+  private detectionCallback: GestureCallback;
+  private prevTime: number = 0;
+  private closing: boolean = false;
+  private playPromise: Promise<void>;
+  private worker = new Worker(
+    new URL("../assets/MediaPipeWorker.js", import.meta.url),
+  );
 
   constructor(stream: MediaStream, detectionCallback: GestureCallback) {
     this.detectionCallback = detectionCallback;
 
-    this.setupLandmarker();
-
     this.video = document.createElement("video");
     this.video.muted = true;
     this.video.srcObject = stream;
-    this.playPromise = this.video.play().catch(() => {});
-    this.video.requestVideoFrameCallback(() => this.detect());
-  }
 
-  async setupLandmarker() {
-    const vision = await FilesetResolver.forVisionTasks(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm",
-    );
-    const landmarker = await HandLandmarker.createFromOptions(vision, {
-      baseOptions: { modelAssetPath: "hand_landmark.task" },
-      runningMode: "VIDEO",
-      numHands: 2,
-    });
-    this.landmarker = landmarker;
+    const { width, height } = stream.getVideoTracks()[0].getSettings();
+    this.canvas = new OffscreenCanvas(width!, height!);
+    this.canvasCtx = this.canvas.getContext("2d", {
+      willReadFrequently: true,
+    })!;
+
+    this.playPromise = this.video.play().catch(() => {});
+
+    this.worker.onmessage = ({ data }) => {
+      this.detectionCallback(findGesture(data));
+      this.video.requestVideoFrameCallback(() => this.detect());
+    };
+
+    this.video.requestVideoFrameCallback(() => this.detect());
   }
 
   detect() {
     if (this.closing) return;
 
     const currentTime = this.video.currentTime;
-    if (this.landmarker && this.prevTime < currentTime) {
+    if (this.prevTime < currentTime) {
       this.prevTime = currentTime;
-      const detections = this.landmarker.detectForVideo(
-        this.video,
-        currentTime * 1000,
-      );
-      this.detectionCallback(findGesture(detections.landmarks));
-    }
 
-    this.video.requestVideoFrameCallback(() => this.detect());
+      this.canvasCtx.drawImage(this.video, 0, 0);
+      const frame = this.canvas.transferToImageBitmap();
+      this.worker.postMessage(frame, [frame]);
+    } else {
+      this.video.requestVideoFrameCallback(() => this.detect());
+    }
   }
 
   close() {
     this.closing = true;
+    this.worker.terminate();
     this.playPromise.finally(() => this.video.remove());
-    this.landmarker?.close();
   }
 }

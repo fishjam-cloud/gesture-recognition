@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useGesture } from "../hooks/useGesture";
 import { useSmelter } from "../hooks/useSmelter";
 import VideoWithEffects from "../components/smelter/VideoWithEffects";
 
