@@ -4,6 +4,7 @@ import path from "node:path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import tailwindcss from "@tailwindcss/vite";
 
 const require = createRequire(import.meta.url);
 
@@ -11,6 +12,7 @@ const require = createRequire(import.meta.url);
 export default defineConfig({
   plugins: [
     react(),
+    tailwindcss(),
     viteStaticCopy({
       targets: [
         {
@@ -30,8 +32,16 @@ export default defineConfig({
       ],
     }),
   ],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
   optimizeDeps: {
     exclude: ["@swmansion/smelter-web-wasm"],
     include: ["@swmansion/smelter-web-wasm > pino"],
+  },
+  worker: {
+    format: "es",
   },
 });

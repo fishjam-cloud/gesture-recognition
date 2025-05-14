@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { GestureDetector, HandGesture } from "../utils/GestureDetector";
+import { GestureDetector } from "../utils/GestureDetector";
+import { HandGesture } from "../utils/Gesture";
 
 export const useGesture = (stream: MediaStream | null) => {
   const [gesture, setGesture] = useState<HandGesture>("NONE");

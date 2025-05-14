@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSmelter } from "../hooks/useSmelter";
 import VideoWithEffects from "../components/smelter/VideoWithEffects";
 
@@ -14,32 +14,39 @@ const getNewId = (() => {
 export const useGestureEffects = ({ stream }: GestureEffects) => {
   const smelter = useSmelter();
   const [outputStream, setOutputStream] = useState<MediaStream | null>(null);
-  const inputIdRef = useRef<string>("");
+  const [inputId, setInputId] = useState<string>();
   const { width, height } = useMemo(() => {
     const settings = stream?.getVideoTracks()[0].getSettings();
     return {
-      width: settings!.width!,
-      height: settings!.height!,
+      width: settings?.width,
+      height: settings?.height,
     };
   }, [stream]);
 
   useEffect(() => {
     if (!smelter || !stream) return;
-    if (inputIdRef.current) smelter.unregisterInput(inputIdRef.current);
 
+    let cancel = false;
     const id = getNewId();
-    inputIdRef.current = id;
 
-    (async () => {
+    const promise = (async () => {
       await smelter.registerInput(id, {
         type: "stream",
         stream: stream.clone(),
       });
+      if (!cancel) setInputId(id);
     })();
+
+    return () => {
+      cancel = true;
+      promise.finally(() => {
+        smelter.unregisterInput(id);
+      });
+    };
   }, [stream, smelter]);
 
   useEffect(() => {
-    if (!smelter || !stream) return;
+    if (!smelter || !stream || !inputId) return;
     const id = getNewId();
     let cancel = false;
 
@@ -48,13 +55,13 @@ export const useGestureEffects = ({ stream }: GestureEffects) => {
         id,
         <VideoWithEffects
           stream={stream}
-          inputId={inputIdRef.current}
-          width={width}
-          height={height}
+          inputId={inputId}
+          width={width!}
+          height={height!}
         />,
         {
           type: "stream",
-          video: { resolution: { width, height } },
+          video: { resolution: { width: width!, height: height! } },
         },
       );
       if (output && !cancel) setOutputStream(output);
@@ -63,9 +70,11 @@ export const useGestureEffects = ({ stream }: GestureEffects) => {
     return () => {
       cancel = true;
       setOutputStream(null);
-      promise.then(() => smelter.unregisterOutput(id));
+      promise.finally(() => {
+        smelter.unregisterOutput(id);
+      });
     };
-  }, [stream, smelter, width, height]);
+  }, [stream, smelter, width, height, inputId]);
 
   return outputStream;
 };

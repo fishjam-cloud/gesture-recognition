@@ -1,18 +1,33 @@
 import { FC, useEffect, useRef } from "react";
-import { useGestureEffects } from "../hooks/useGestureEffects";
 
 export type PeerTileProps = {
-  stream: MediaStream;
+  stream: MediaStream | null;
+  name: string;
 };
 
-export const PeerTile: FC<PeerTileProps> = ({ stream }) => {
+export const PeerTile: FC<PeerTileProps> = ({ stream, name }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const effectStream = useGestureEffects({ stream });
 
   useEffect(() => {
     if (!videoRef.current) return;
-    videoRef.current.srcObject = effectStream;
-  }, [effectStream]);
+    videoRef.current.srcObject = stream;
+  }, [stream]);
 
-  return <video autoPlay muted playsInline ref={videoRef} />;
+  return (
+    <div className="min-w-0 overflow-hidden grid place-content-center box-border border-2 rounded-xl">
+      {stream ? (
+        <div className="h-fit w-fit">
+          <video
+            className="z-10 rounded-xl"
+            autoPlay
+            muted
+            playsInline
+            ref={videoRef}
+          />
+        </div>
+      ) : (
+        <div className="m-auto text-center">{name}</div>
+      )}
+    </div>
+  );
 };
