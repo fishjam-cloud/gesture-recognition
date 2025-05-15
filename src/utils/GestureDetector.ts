@@ -2,8 +2,6 @@ import { findGesture, GestureCallback } from "./Gesture";
 
 export class GestureDetector {
   private video: HTMLVideoElement;
-  private canvas: OffscreenCanvas;
-  private canvasCtx: OffscreenCanvasRenderingContext2D;
   private prevTime: number = 0;
   private closing: boolean = false;
   private playPromise: Promise<void>;
@@ -14,12 +12,6 @@ export class GestureDetector {
     this.video.muted = true;
     this.video.srcObject = stream;
     this.playPromise = this.video.play().catch(() => {});
-
-    const { width, height } = stream.getVideoTracks()[0].getSettings();
-    this.canvas = new OffscreenCanvas(width!, height!);
-    this.canvasCtx = this.canvas.getContext("2d", {
-      willReadFrequently: true,
-    })!;
 
     this.worker = new Worker(new URL("./MediaPipeWorker.js", import.meta.url));
     this.worker.onmessage = ({ data }) => {
@@ -39,9 +31,8 @@ export class GestureDetector {
     }
 
     this.prevTime = currentTime;
-    this.canvasCtx.drawImage(this.video, 0, 0);
-    const frame = this.canvas.transferToImageBitmap();
-    this.worker.postMessage({ type: "frame", frame }, [frame]);
+    const frame = new VideoFrame(this.video);
+    this.worker.postMessage({ type: "frame", frame, ts: currentTime }, [frame]);
   }
 
   close() {

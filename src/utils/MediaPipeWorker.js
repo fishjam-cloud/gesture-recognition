@@ -8,8 +8,11 @@ const init = async () => {
 
   landmarker = await HandLandmarker.createFromOptions(vision, {
     baseOptions: { modelAssetPath: "/hand_landmark.task" },
-    runningMode: "IMAGE",
+    runningMode: "VIDEO",
     numHands: 2,
+    minHandDetectionConfidence: 0.4,
+    minHandPresenceConfidence: 0.4,
+    minTrackingConfidence: 0.4,
   });
 };
 
@@ -27,14 +30,14 @@ self.onmessage = ({ data }) => {
     case "close":
       return cleanup();
     case "frame":
-      return processFrame(data.frame);
+      return processFrame(data.frame, data.ts);
     default:
       console.error(`Unknown message type ${data.type}`);
   }
 };
 
-const processFrame = (frame) => {
-  const detections = landmarker?.detect(frame);
+const processFrame = (frame, ts) => {
+  const detections = landmarker?.detectForVideo(frame, ts);
   frame.close();
   postMessage(detections?.landmarks ?? []);
 };
