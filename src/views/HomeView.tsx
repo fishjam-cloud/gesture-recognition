@@ -22,7 +22,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Loader } from "lucide-react";
-import { useEffect, useId, useRef } from "react";
+import { useId } from "react";
 
 const formSchema = z.object({
   roomName: z.string().nonempty({

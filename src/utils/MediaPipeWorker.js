@@ -4,7 +4,7 @@ const init = async () => {
   const { FilesetResolver, HandLandmarker } = await import(
     "@mediapipe/tasks-vision"
   );
-  const vision = await FilesetResolver.forVisionTasks("/assets/wasm");
+  const vision = await FilesetResolver.forVisionTasks("/assets/mediapipe-wasm");
 
   landmarker = await HandLandmarker.createFromOptions(vision, {
     baseOptions: { modelAssetPath: "/hand_landmark.task" },

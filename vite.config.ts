@@ -28,6 +28,7 @@ export default defineConfig({
             "wasm",
           ),
           dest: "assets",
+          rename: "mediapipe-wasm",
         },
       ],
     }),
