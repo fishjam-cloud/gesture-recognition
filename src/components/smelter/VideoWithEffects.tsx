@@ -4,7 +4,7 @@ import { useGesture } from "../../hooks/useGesture";
 import { useEffect, useState } from "react";
 
 export type VideoWithEffectsProps = {
-  stream: MediaStream;
+  track: MediaStreamTrack;
   inputId: string;
   width: number;
   height: number;
@@ -13,12 +13,12 @@ export type VideoWithEffectsProps = {
 const DURATION = 3000;
 
 export default function VideoWithEffects({
-  stream,
+  track,
   inputId,
   width,
   height,
 }: VideoWithEffectsProps) {
-  const gesture = useGesture(stream);
+  const gesture = useGesture(track);
   const [running, setRunning] = useState(false);
 
   useEffect(() => {

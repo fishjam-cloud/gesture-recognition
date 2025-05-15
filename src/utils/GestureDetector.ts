@@ -9,7 +9,8 @@ export class GestureDetector {
   private playPromise: Promise<void>;
   private worker: Worker;
 
-  constructor(stream: MediaStream, detectionCallback: GestureCallback) {
+  constructor(track: MediaStreamTrack, detectionCallback: GestureCallback) {
+    const stream = new MediaStream([track]);
     this.video = document.createElement("video");
     this.video.muted = true;
     this.video.srcObject = stream;
