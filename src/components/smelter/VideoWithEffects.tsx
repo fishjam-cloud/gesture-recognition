@@ -10,7 +10,7 @@ export type VideoWithEffectsProps = {
   height: number;
 };
 
-const DURATION = 3000;
+const DURATION = 5000;
 
 export default function VideoWithEffects({
   stream,
