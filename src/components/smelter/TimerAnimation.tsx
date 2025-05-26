@@ -7,28 +7,56 @@ export type TimerAnimationProps = {
   height: number;
 };
 
+type AnimationState = "before" | "pause" | "after";
+
+const START_DELAY = 100;
+
 export default function TimerAnimation({
   duration,
   width,
   height,
 }: TimerAnimationProps) {
-  const [done, setDone] = useState(false);
-  const right = done ? -width : width;
-  const rotation = done ? -1440 : 0;
+  const [animationState, setAnimationState] =
+    useState<AnimationState>("before");
 
-  const sz = useMemo(() => Math.min(width, height), [width, height]);
+  const durationMs = (duration - START_DELAY) / 3;
+
+  const right = useMemo(() => {
+    switch (animationState) {
+      case "before":
+        return width;
+      case "pause":
+        return 0;
+      default:
+        return -2 * width;
+    }
+  }, [animationState, width]);
+
+  const rotation = useMemo(() => {
+    switch (animationState) {
+      case "before":
+        return 90;
+      case "pause":
+        return 0;
+      default:
+        return -90;
+    }
+  }, [animationState]);
 
   useEffect(() => {
-    setTimeout(() => setDone(true), 100);
-  }, []);
+    setTimeout(() => {
+      setAnimationState("pause");
+      setTimeout(() => setAnimationState("after"), 2 * durationMs);
+    }, START_DELAY);
+  }, [durationMs]);
 
   return (
     <View style={{ width, height, top: 0, left: 0 }}>
       <Rescaler
-        style={{ bottom: 0, right, width: sz, height: sz, rotation }}
-        transition={{ durationMs: duration }}
+        style={{ bottom: 0, width, right, rotation }}
+        transition={{ durationMs, easingFunction: "bounce" }}
       >
-        <Image imageId="timer" />
+        <Image imageId="timeout-text" />
       </Rescaler>
     </View>
   );
