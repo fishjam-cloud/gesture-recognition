@@ -1,5 +1,5 @@
+import { Loader2 } from "lucide-react";
 import { FC, useEffect, useRef } from "react";
-import HelpTooltip from "./HelpTooltip";
 
 export type PeerTileProps = {
   stream: MediaStream | null;
@@ -7,7 +7,7 @@ export type PeerTileProps = {
   showHelp?: boolean;
 };
 
-export const PeerTile: FC<PeerTileProps> = ({ stream, name, showHelp }) => {
+export const PeerTile: FC<PeerTileProps> = ({ stream, name }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -16,20 +16,20 @@ export const PeerTile: FC<PeerTileProps> = ({ stream, name, showHelp }) => {
   }, [stream]);
 
   return (
-    <div className="min-w-0 overflow-hidden grid place-content-center box-border border-2 rounded-xl">
+    <div className="relative overflow-hidden rounded-xl">
       {stream ? (
-        <div className="relative w-fit h-fit overflow-hidden">
-          <video
-            className="rounded-xl"
-            autoPlay
-            muted
-            playsInline
-            ref={videoRef}
-          />
-          {showHelp && <HelpTooltip />}
-        </div>
+        <video
+          className="absolute left-1/2 top-1/2 -translate-1/2 rounded-xl w-full object-contain"
+          autoPlay
+          muted
+          playsInline
+          ref={videoRef}
+        ></video>
       ) : (
-        <div className="m-auto text-center">{name}</div>
+        <div className="absolute flex gap-2 left-1/2 top-1/2 -translate-1/2 text-center">
+          <Loader2 className="animate-spin" />
+          {name}
+        </div>
       )}
     </div>
   );

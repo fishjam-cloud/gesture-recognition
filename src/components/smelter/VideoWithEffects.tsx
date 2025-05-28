@@ -33,11 +33,9 @@ export default function VideoWithEffects({
       <Rescaler>
         <InputStream inputId={inputId} />
       </Rescaler>
-      <View style={{ width, height, left: 0, top: 0 }}>
-        {running && (
-          <TimerAnimation width={width} height={height} duration={DURATION} />
-        )}
-      </View>
+      {running && (
+        <TimerAnimation width={width} height={height} duration={DURATION} />
+      )}
     </View>
   );
 }

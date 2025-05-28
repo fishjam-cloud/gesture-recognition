@@ -11,11 +11,8 @@
   },
   "dependencies": {
     "@fishjam-cloud/react-client": "^0.17.0",
-    "@hookform/resolvers": "^5.0.1",
     "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
-    "@radix-ui/react-label": "^2.1.6",
-    "@radix-ui/react-slot": "^1.2.2",
-    "@radix-ui/react-tooltip": "^1.2.7",
+    "@radix-ui/react-separator": "^1.1.7",
     "@swmansion/smelter": "^0.2.1",
     "@swmansion/smelter-web-wasm": "^0.2.1",
     "axios": "^1.9.0",
@@ -24,9 +21,7 @@
     "lucide-react": "^0.510.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-hook-form": "^7.56.3",
-    "react-router": "^7.6.0",
-    "zod": "^3.24.4"
+    "react-router": "^7.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",

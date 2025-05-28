@@ -4,7 +4,8 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(1 0 0);
+  --font-sans: "aktiv-grotesk", sans-serif;
+  --background: #fcf6e7;
   --foreground: oklch(0.147 0.004 49.25);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.147 0.004 49.25);
@@ -72,6 +73,15 @@
   --sidebar-accent-foreground: oklch(0.985 0.001 106.423);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.553 0.013 58.071);
+}
+
+@font-face {
+  font-family: "aktiv-grotesk";
+  src:
+    url("./assets/fonts/AktivGrotesk.woff2") format("woff2"),
+    url("./assets/fonts/AktivGrotesk.woff") format("woff"),
+    url("./assets/fonts/AktivGrotesk.otf") format("opentype");
+  font-display: auto;
 }
 
 @theme inline {

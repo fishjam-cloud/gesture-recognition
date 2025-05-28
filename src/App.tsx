@@ -3,6 +3,7 @@ import RoomView from "./views/RoomView";
 import { useParams } from "react-router";
 import { useEffect, useMemo } from "react";
 import useRoomCredentials from "./hooks/useRoomCredentials";
+import TitleBar from "./components/TitleBar";
 
 function App() {
   const { joinRoom } = useConnection();
@@ -16,7 +17,10 @@ function App() {
   }, [joinRoom, creds, peer]);
 
   return (
-    <main className="flex h-screen w-screen bg-stone-100">{<RoomView />}</main>
+    <main className="flex flex-col px-4 pb-4 gap-4 xl:px-16 h-screen w-screen bg-background">
+      <TitleBar />
+      <RoomView />
+    </main>
   );
 }
 

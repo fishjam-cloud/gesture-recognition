@@ -24,8 +24,7 @@ export default function RoomView() {
 
   return (
     <section
-      className={`h-full w-full grid grid-flow-row gap-4 p-4`}
-      style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+      className={`w-full flex-1 grid grid-flow-row justify-center align-center grid-cols-1 md:grid-cols-${cols} gap-4 lg:gap-8 p-4`}
     >
       <PeerTile name="You" stream={stream ?? null} showHelp />
       {remotePeers.map((peer) => (

@@ -10,9 +10,9 @@ const init = async () => {
     baseOptions: { modelAssetPath: "/hand_landmark.task" },
     runningMode: "VIDEO",
     numHands: 2,
-    minHandDetectionConfidence: 0.4,
-    minHandPresenceConfidence: 0.4,
-    minTrackingConfidence: 0.4,
+    minHandDetectionConfidence: 0.03,
+    minHandPresenceConfidence: 0.3,
+    minTrackingConfidence: 0.3,
   });
 };
 
@@ -30,14 +30,14 @@ self.onmessage = ({ data }) => {
     case "close":
       return cleanup();
     case "frame":
-      return processFrame(data.frame, data.ts);
+      return processFrame(data.frame);
     default:
       console.error(`Unknown message type ${data.type}`);
   }
 };
 
-const processFrame = (frame, ts) => {
-  const detections = landmarker?.detectForVideo(frame, ts);
+const processFrame = (frame) => {
+  const detections = landmarker?.detectForVideo(frame, frame.timestamp);
   frame.close();
   postMessage(detections?.landmarks ?? []);
 };
