@@ -53,12 +53,7 @@ export const useGestureEffects = ({ stream }: GestureEffects) => {
     const promise = (async () => {
       const { stream: output } = await smelter.registerOutput(
         id,
-        <VideoWithEffects
-          stream={stream}
-          inputId={inputId}
-          width={width!}
-          height={height!}
-        />,
+        <VideoWithEffects stream={stream} inputId={inputId} width={width!} />,
         {
           type: "stream",
           video: { resolution: { width: width!, height: height! } },

@@ -1,5 +1,5 @@
 import { InputStream, Rescaler, View } from "@swmansion/smelter";
-import TimerAnimation from "./TimerAnimation";
+import Animation from "./Animation";
 import { useGesture } from "../../hooks/useGesture";
 import { useEffect, useState } from "react";
 
@@ -7,7 +7,6 @@ export type VideoWithEffectsProps = {
   stream: MediaStream;
   inputId: string;
   width: number;
-  height: number;
 };
 
 const DURATION = 5000;
@@ -16,7 +15,6 @@ export default function VideoWithEffects({
   stream,
   inputId,
   width,
-  height,
 }: VideoWithEffectsProps) {
   const gesture = useGesture(stream);
   const [running, setRunning] = useState(false);
@@ -33,9 +31,7 @@ export default function VideoWithEffects({
       <Rescaler>
         <InputStream inputId={inputId} />
       </Rescaler>
-      {running && (
-        <TimerAnimation width={width} height={height} duration={DURATION} />
-      )}
+      {running && <Animation width={width} duration={DURATION} />}
     </View>
   );
 }
