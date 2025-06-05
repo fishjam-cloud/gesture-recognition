@@ -5,7 +5,7 @@ import { useEffect, useMemo } from "react";
 import useRoomCredentials from "./hooks/useRoomCredentials";
 import TitleBar from "./components/TitleBar";
 import Footer from "./components/Footer";
-import { Separator } from "./components/ui/separator";
+import { Toaster } from "./components/ui/sonner";
 
 function App() {
   const { joinRoom } = useConnection();
@@ -19,12 +19,14 @@ function App() {
   }, [joinRoom, creds, peer]);
 
   return (
-    <main className="flex flex-col items-center px-4 pb-4 gap-4 xl:px-16 h-screen w-screen bg-background">
-      <TitleBar />
-      <RoomView />
-      <Separator orientation="horizontal" />
-      <Footer />
-    </main>
+    <>
+      <main className="flex flex-col items-center px-4 pt-4 md:pt-8 pb-4 md:pb-16 gap-8 md:px-6 xl:px-20 h-screen w-screen">
+        <TitleBar />
+        <RoomView />
+        <Footer />
+      </main>
+      <Toaster />
+    </>
   );
 }
 
