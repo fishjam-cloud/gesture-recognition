@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren } from "react";
+import { FC } from "react";
 import fishjam from "../assets/fishjam.svg";
 import smelter from "../assets/smelter.svg";
 import mediapipe from "../assets/mediapipe.svg";
@@ -14,7 +14,7 @@ type LinkButtonProps = {
 };
 
 const LinkButton: FC<LinkButtonProps> = ({ to, img, text, swapped }) => {
-  const image = <img src={img} className="hidden sm:block size-6" />;
+  const image = <img src={img} className="hidden size-6 sm:block" />;
   return (
     <Link to={to} target="_blank">
       <Button variant="outline" size="responsive">
@@ -34,9 +34,9 @@ const LinkButton: FC<LinkButtonProps> = ({ to, img, text, swapped }) => {
 
 const Footer: FC = () => {
   return (
-    <div className="flex flex-col md:flex-row w-full gap-4 items-center justify-between">
-      <div className="flex gap-4 items-center">
-        <p className="text-sm sm:text-base lg:text-lg shrink-0">Created with</p>
+    <div className="flex w-full flex-col items-center justify-between gap-4 md:flex-row">
+      <div className="flex items-center gap-4">
+        <p className="shrink-0 text-sm sm:text-base lg:text-lg">Created with</p>
         <LinkButton to="https://fishjam.io" img={fishjam} text="Fishjam" />
         <LinkButton to="https://smelter.dev" img={smelter} text="Smelter" />
         <LinkButton

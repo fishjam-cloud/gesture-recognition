@@ -19,14 +19,14 @@ export const PeerTile: FC<PeerTileProps> = ({ stream, name }) => {
     <div className="relative overflow-hidden rounded-xl">
       {stream ? (
         <video
-          className="absolute left-1/2 top-1/2 -translate-1/2 rounded-xl w-full object-contain"
+          className="absolute top-1/2 left-1/2 w-full -translate-1/2 rounded-xl object-contain"
           autoPlay
           muted
           playsInline
           ref={videoRef}
         ></video>
       ) : (
-        <div className="absolute flex gap-2 left-1/2 top-1/2 -translate-1/2 text-center">
+        <div className="absolute top-1/2 left-1/2 flex -translate-1/2 gap-2 text-center">
           <Loader2 className="animate-spin" />
           {name}
         </div>

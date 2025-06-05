@@ -13,7 +13,7 @@ export function toast(title: string, icon: LucideIcon) {
 /** A fully custom toast that still maintains the animations and interactions. */
 function Toast({ title, icon: Icon }: ToastProps) {
   return (
-    <div className="flex rounded-full bg-white shadow-md/30 md:max-w-[364px] items-center gap-2 p-4">
+    <div className="flex items-center gap-2 rounded-full bg-white p-4 shadow-md/30 md:max-w-[364px]">
       <Icon size={24} />
       <p className="font-june">{title}</p>
     </div>

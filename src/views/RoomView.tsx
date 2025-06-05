@@ -24,7 +24,7 @@ export default function RoomView() {
 
   return (
     <section
-      className={`w-full flex-1 grid grid-flow-row justify-center align-center grid-cols-1 md:grid-cols-${cols} gap-4 lg:gap-8`}
+      className={`align-center grid w-full flex-1 grid-flow-row grid-cols-1 justify-center md:grid-cols-${cols} gap-4 lg:gap-8`}
     >
       <PeerTile name="You" stream={stream ?? null} showHelp />
       {remotePeers.map((peer) => (

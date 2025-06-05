@@ -20,7 +20,7 @@ function App() {
 
   return (
     <>
-      <main className="flex flex-col items-center px-4 pt-4 md:pt-8 pb-4 md:pb-16 gap-8 md:px-6 xl:px-20 h-screen w-screen">
+      <main className="flex h-screen w-screen flex-col items-center gap-8 px-4 pt-4 pb-4 md:px-6 md:pt-8 md:pb-16 xl:px-20">
         <TitleBar />
         <RoomView />
         <Footer />
