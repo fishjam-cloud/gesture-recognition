@@ -23,7 +23,7 @@ const TitleBar: FC = () => {
       </div>
       <div className="flex items-center gap-4">
         <p className="text-center text-sm sm:text-base lg:text-lg">
-          Share the with someone to invite them to join!
+          Share the URL with someone to invite them to join!
         </p>
         <CopyButton value={window.location.href} onCopy={onCopy}>
           <Share2 size={24} />
