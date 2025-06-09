@@ -26,12 +26,12 @@ export default function RoomView() {
     <section
       className={`align-center grid w-full flex-1 grid-flow-row grid-cols-1 justify-center md:grid-cols-${cols} gap-4 lg:gap-8`}
     >
-      <PeerTile name="You" stream={stream ?? null} showHelp />
+      <PeerTile name="You" stream={stream ?? cameraStream} showHelp />
       {remotePeers.map((peer) => (
         <PeerTile
           name={peer.metadata?.peer?.name ?? peer.id}
           key={peer.id}
-          stream={peer.customVideoTracks[0]?.stream}
+          stream={peer.customVideoTracks[0]?.stream ?? peer.cameraTrack?.stream}
         />
       ))}
     </section>
