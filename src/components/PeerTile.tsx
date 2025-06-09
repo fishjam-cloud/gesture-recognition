@@ -2,7 +2,7 @@ import { Loader2 } from "lucide-react";
 import { FC, useEffect, useRef } from "react";
 
 export type PeerTileProps = {
-  stream: MediaStream | null;
+  stream?: MediaStream | null;
   name: string;
   showHelp?: boolean;
 };
@@ -12,7 +12,7 @@ export const PeerTile: FC<PeerTileProps> = ({ stream, name }) => {
 
   useEffect(() => {
     if (!videoRef.current) return;
-    videoRef.current.srcObject = stream;
+    videoRef.current.srcObject = stream ?? null;
   }, [stream]);
 
   return (
