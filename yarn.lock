@@ -325,27 +325,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fishjam-cloud/react-client@npm:^0.17.0":
-  version: 0.17.0
-  resolution: "@fishjam-cloud/react-client@npm:0.17.0"
+"@fishjam-cloud/react-client@npm:^0.24.0":
+  version: 0.24.0
+  resolution: "@fishjam-cloud/react-client@npm:0.24.0"
   dependencies:
-    "@fishjam-cloud/ts-client": "npm:0.17.0"
+    "@fishjam-cloud/ts-client": "npm:0.24.0"
     events: "npm:3.3.0"
     lodash.isequal: "npm:4.5.0"
-  checksum: 10c0/48c1a9c4f51079d80156cec40eb11867b5af9a568699b76a26909a351445e2bf94835c657a50b68805c01cb8b4e3ec1ffcd8be8ef877dfcd6814a3582e956586
+  checksum: 10c0/d58e5fd8eee08417f09013de04daf4c707fbb3a75412aa4eb8b50fd7896d1902b065f5f3abc162a7ddb70778ab0e207d2eb72e79973d64ec12200db2e7cf7499
   languageName: node
   linkType: hard
 
-"@fishjam-cloud/ts-client@npm:0.17.0":
-  version: 0.17.0
-  resolution: "@fishjam-cloud/ts-client@npm:0.17.0"
+"@fishjam-cloud/ts-client@npm:0.24.0":
+  version: 0.24.0
+  resolution: "@fishjam-cloud/ts-client@npm:0.24.0"
   dependencies:
     "@binbat/whip-whep": "npm:^1.1.1-sdp-trickle-throw"
     "@bufbuild/protobuf": "npm:^2.2.3"
     events: "npm:^3.3.0"
     typed-emitter: "npm:^2.1.0"
     uuid: "npm:^11.1.0"
-  checksum: 10c0/936386b326a69a1a98265020b92d3ba68f7e1a7bced2e72f54efc846e1aa99d1269a59060b24cc2ea85ddd59d6a473609efde269adf26d5c4719b6e9989b9d13
+  checksum: 10c0/b637bff32bdc89354bbbf828dfbbb4d4fbd7fd87b953d2d3c2b6d36b2c06d7cdb64330d6d10a38d4786d2da4a06c97dcb7a2e407701b8c9edb7bccb2b8972717
   languageName: node
   linkType: hard
 
@@ -2394,7 +2394,7 @@ __metadata:
   resolution: "gesture-recognition@workspace:."
   dependencies:
     "@eslint/js": "npm:^9.22.0"
-    "@fishjam-cloud/react-client": "npm:^0.17.0"
+    "@fishjam-cloud/react-client": "npm:^0.24.0"
     "@mediapipe/tasks-vision": "npm:^0.10.22-rc.20250304"
     "@radix-ui/react-alert-dialog": "npm:^1.1.14"
     "@radix-ui/react-separator": "npm:^1.1.7"

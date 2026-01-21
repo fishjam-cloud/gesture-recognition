@@ -1,8 +1,7 @@
-import { useConnection } from "@fishjam-cloud/react-client";
+import { useConnection, useSandbox } from "@fishjam-cloud/react-client";
 import RoomView from "./views/RoomView";
 import { useParams } from "react-router";
 import { useEffect, useMemo } from "react";
-import useRoomCredentials from "./hooks/useRoomCredentials";
 import TitleBar from "./components/TitleBar";
 import Footer from "./components/Footer";
 import { Toaster } from "./components/ui/sonner";
@@ -11,12 +10,14 @@ function App() {
   const { joinRoom } = useConnection();
   const { room } = useParams();
   const peer = useMemo(() => crypto.randomUUID(), []);
-  const creds = useRoomCredentials(room, peer);
+  const { getSandboxPeerToken } = useSandbox();
 
   useEffect(() => {
-    if (!creds) return;
-    joinRoom({ ...creds, peerMetadata: { name: peer } });
-  }, [joinRoom, creds, peer]);
+    if (!room) return;
+    getSandboxPeerToken(room, peer).then((peerToken) =>
+      joinRoom({ peerToken, peerMetadata: { name: peer } }),
+    );
+  }, [joinRoom, getSandboxPeerToken, room, peer]);
 
   return (
     <>

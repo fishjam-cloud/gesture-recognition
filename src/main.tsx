@@ -12,7 +12,7 @@ setWasmBundleUrl("/assets/smelter.wasm");
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <FishjamProvider>
+    <FishjamProvider fishjamId={import.meta.env.VITE_FISHJAM_ID}>
       <SmelterProvider>
         <BrowserRouter>
           <Routes>
