@@ -14,7 +14,9 @@ function App() {
 
   useEffect(() => {
     if (!room) return;
-    getSandboxPeerToken(room, peer).then((peerToken) => joinRoom({ peerToken, peerMetadata: { name: peer } }))
+    getSandboxPeerToken(room, peer).then((peerToken) =>
+      joinRoom({ peerToken, peerMetadata: { name: peer } }),
+    );
   }, [joinRoom, getSandboxPeerToken, room, peer]);
 
   return (
