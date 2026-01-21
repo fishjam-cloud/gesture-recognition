@@ -7,17 +7,20 @@ import Footer from "./components/Footer";
 import { Toaster } from "./components/ui/sonner";
 
 function App() {
-  const { joinRoom } = useConnection();
+  const { joinRoom, peerStatus } = useConnection();
   const { room } = useParams();
   const peer = useMemo(() => crypto.randomUUID(), []);
   const { getSandboxPeerToken } = useSandbox();
 
   useEffect(() => {
-    if (!room) return;
-    getSandboxPeerToken(room, peer).then((peerToken) =>
-      joinRoom({ peerToken, peerMetadata: { name: peer } }),
-    );
-  }, [joinRoom, getSandboxPeerToken, room, peer]);
+    const join = async () => {
+      if (!room || peerStatus === "connected" || peerStatus === "connecting")
+        return;
+      const peerToken = await getSandboxPeerToken(room, peer);
+      await joinRoom({ peerToken, peerMetadata: { name: peer } });
+    };
+    join();
+  }, [peer, room, getSandboxPeerToken, joinRoom, peerStatus]);
 
   return (
     <>
