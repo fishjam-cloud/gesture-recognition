@@ -46,4 +46,4 @@ jobs:
           rm: true
           strip_components: 1
           source: dist/*
-          target: /usr/share/nginx/html
+          target: /var/www/gesture.fishjam.io
