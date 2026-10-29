@@ -6,10 +6,6 @@ import TitleBar from "./components/TitleBar";
 import Footer from "./components/Footer";
 import { Toaster } from "./components/ui/sonner";
 
-if (!import.meta.env.VITE_ROOM_MANAGER_URL) {
-  throw new Error("VITE_ROOM_MANAGER_URL must be configured");
-}
-
 function App() {
   const { joinRoom, peerStatus } = useConnection();
   const { room } = useParams();
