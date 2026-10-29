@@ -10,7 +10,9 @@ function App() {
   const { joinRoom, peerStatus } = useConnection();
   const { room } = useParams();
   const peer = useMemo(() => crypto.randomUUID(), []);
-  const { getSandboxPeerToken } = useSandbox();
+  const { getSandboxPeerToken } = useSandbox({
+    configOverride: { sandboxApiUrl: import.meta.env.VITE_ROOM_MANAGER_URL },
+  });
 
   useEffect(() => {
     const join = async () => {

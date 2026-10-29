@@ -36,6 +36,7 @@ jobs:
       - name: Build project
         env:
           VITE_FISHJAM_ID: ${{ vars.FISHJAM_ID }}
+          VITE_ROOM_MANAGER_URL: ${{ vars.ROOM_MANAGER_URL }}
         run: yarn build
       - name: Copy files to deployment server
         uses: appleboy/scp-action@v1
