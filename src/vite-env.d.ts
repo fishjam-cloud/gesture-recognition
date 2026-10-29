@@ -6,6 +6,7 @@ interface ViteTypeOptions {
 
 interface ImportMetaEnv {
   readonly VITE_FISHJAM_ID: string;
+  readonly VITE_ROOM_MANAGER_URL: string;
 }
 
 interface ImportMeta {
